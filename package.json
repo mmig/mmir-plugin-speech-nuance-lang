@@ -2,7 +2,7 @@
   "name": "mmir-plugin-speech-nuance-lang",
   "version": "1.0.0",
   "description": "tools for querying supported languages (ASR and TTS) and voices (TTS) by Nuance SpeechKit",
-  "main": "./www/languageTools.js",
+  "main": "./index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
