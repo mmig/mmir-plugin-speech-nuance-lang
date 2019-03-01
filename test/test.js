@@ -1,5 +1,5 @@
 
-var lang = require('./www/languageTools.js');
+var lang = require('../www/languageSupport.js');
 
 var queries = [
   'EnG', 'enG_gBr', 'eng-Ind', 'deu-SWE', 'fra', 'fra_fra'
