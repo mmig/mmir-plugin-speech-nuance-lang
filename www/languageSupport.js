@@ -264,7 +264,7 @@ function ttsSelectVoice(langCode, query){
 
   if(_lastSelectedVoice && _lastSelectedVoice.language === langCode && _lastSelectedVoice.filter === query){
     // console.log('  ######## using cached _lastSelectedVoice ', _lastSelectedVoice);
-    return _lastSelectedVoice;
+    return _lastSelectedVoice.voice;
   }
   // console.log('-----------------------------\nno match for cached _lastSelectedVoice ', _lastSelectedVoice);
 
@@ -281,7 +281,10 @@ function ttsSelectVoice(langCode, query){
     voice = ttsProjection.voice(voice);
   } else{
     //2. get best matching voice for langCode & query
-    voice = getBestVoice(langCode, query);
+    var bestMatch = getBestVoice(langCode, query);
+    if(bestMatch){
+      voice = bestMatch.voice;
+    }
   }
 
   if(voice){
