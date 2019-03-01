@@ -1,0 +1,21 @@
+{
+  "name": "mmir-plugin-speech-nuance-lang",
+  "version": "1.0.0",
+  "description": "tools for querying supported languages (ASR and TTS) and voices (TTS) by Nuance SpeechKit",
+  "main": "./www/languageTools.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab-cos.b.dfki.de/mmir/mmir-plugin-speech-nuance-lang.git"
+  },
+  "keywords": [
+    "speech",
+    "language",
+    "nuance",
+    "speechkit"
+  ],
+  "author": "russa",
+  "license": "MIT"
+}
