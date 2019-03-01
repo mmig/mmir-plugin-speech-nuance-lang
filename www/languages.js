@@ -132,16 +132,16 @@ var asrLanguages = [
 	["Thai", "tha-THA", "8 kHz, 16 kHz"],
 	["Turkish", "tur-TUR", "8 kHz, 16 kHz"],
 	["Ukrainian", "ukr-UKR", "8 kHz, 16 kHz"],
-	["Vietnamese", "vie-VNM", "8 kHz, 16 kHz"],
+	["Vietnamese", "vie-VNM", "8 kHz, 16 kHz"]
 ];
-	
-	
+
+
 module.exports = {
 	/**
 	 * ASR languages:
 	 * list of arrays, where an array in the list contains
 	 * <pre>
-     * [0] Language, [1]	6 char *, [2]	Frequency
+	 * [0] Language, [1]	6 char *, [2]	Frequency
 	 * </pre>
 	 * @type Array<Array<string>>
 	 */
@@ -150,7 +150,7 @@ module.exports = {
      * TTS languages & voices:
      * list of arrays, where an array in the list contains
      * <pre>
-	 * [0] Language, [1]	6 char *, [2]	Voice, [3]	M / F
+     * [0] Language, [1]	6 char *, [2]	Voice, [3]	M / F
      * </pre>
      * @type Array<Array<string>>
      */
