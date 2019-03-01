@@ -1,14 +1,4 @@
 
-// integration into plugin.xml like:
-//
-//    <js-module src="www/languages.js" name="languages">
-//    </js-module>
-//
-//    <js-module src="www/languageTools.js" name="languageSupport">
-//    	<clobbers target="window.cordova.plugins.nuanceLanguageSupport" />
-//    </js-module>
-//
-
 var languages = require('./languages');
 
 /**
@@ -240,6 +230,7 @@ function getBestVoice(langCode, gender) {
     // console.log('  ######## using cached _lastBestVoice ', _lastBestVoice);
 		return _lastBestVoice;
 	}
+  // console.log('-----------------------------\nno match for cached _lastBestVoice ', _lastBestVoice);
 
 	var langParts = langCode.split(/[-_]/);
 	var lang = langParts[0];
@@ -272,10 +263,10 @@ function ttsSelectVoice(langCode, query){
   langCode = langCode || '';
 
   if(_lastSelectedVoice && _lastSelectedVoice.language === langCode && _lastSelectedVoice.filter === query){
-    console.log('  ######## using cached _lastSelectedVoice ', _lastSelectedVoice);
+    // console.log('  ######## using cached _lastSelectedVoice ', _lastSelectedVoice);
     return _lastSelectedVoice;
   }
-  console.log('-----------------------------\nno match for cached _lastSelectedVoice ', _lastSelectedVoice);
+  // console.log('-----------------------------\nno match for cached _lastSelectedVoice ', _lastSelectedVoice);
 
   //1. try to get voice by name:
   var re = new RegExp('^' + query + '$', 'i');
@@ -307,6 +298,7 @@ function ttsSelectVoice(langCode, query){
 module.exports = {
     ttsLanguages: function(){ return getTTS('code');},
     ttsVoices: function(langCode, gender){ return getTTS('voice', langCode, gender);},
+    ttsVoiceNames: function(langCode, gender){ return getTTS('voiceName', langCode, gender);},
     ttsBestVoiceFor: getBestVoice,
     asrLanguages: function(){ return getASR('code');},
     ttsSelectVoice: ttsSelectVoice

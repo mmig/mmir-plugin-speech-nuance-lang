@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+    xmlns="http://cordova.apache.org/ns/plugins/1.0"
+    id="mmir-plugin-speech-nuance-lang"
+    version="1.0.0">
+
+    <name>Nuance SpeechKit Supported Languages and Voices</name>
+
+    <keywords>cordova,speech,asr,recognition</keywords>
+
+    <description>
+      tools for querying supported languages (ASR and TTS) and voices (TTS) by Nuance SpeechKit
+    </description>
+
+    <author>russa, DFKI</author>
+
+    <engines>
+        <engine name="cordova" version=">=5.0" />
+    </engines>
+
+    <js-module src="www/languages.js" name="languages">
+    </js-module>
+
+    <js-module src="www/languageTools.js" name="languageSupport">
+    	<clobbers target="window.cordova.plugins.nuanceLanguageSupport" />
+    </js-module>
+
+</plugin>
