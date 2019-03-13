@@ -1,33 +1,33 @@
-
-var languages = require('./languages');
-
-/**
- * TTS languages & voices:
- * list of arrays, where an array in the list contains
- * <pre>
- * [0] Language, [1]	6 char *, [2]	Voice, [3]	M / F
- * </pre>
- * @type Array<Array<string>>
- */
-var ttsLanguages = languages.ttsLanguages;
-
-/**
- * ASR languages:
- * list of arrays, where an array in the list contains
- * <pre>
- * [0] Language, [1]	6 char *, [2]	Frequency
- * </pre>
- * @type Array<Array<string>>
- */
-var asrLanguages = languages.asrLanguages;
-
+"use strict";
+// var languages = require('./languages');
+//
+// /**
+//  * TTS languages & voices:
+//  * list of arrays, where an array in the list contains
+//  * <pre>
+//  * [0] Language, [1]	6 char *, [2]	Voice, [3]	M / F
+//  * </pre>
+//  * @type Array<Array<string>>
+//  */
+// var ttsLanguages = languages.ttsLanguages;
+//
+// /**
+//  * ASR languages:
+//  * list of arrays, where an array in the list contains
+//  * <pre>
+//  * [0] Language, [1]	6 char *, [2]	Frequency
+//  * </pre>
+//  * @type Array<Array<string>>
+//  */
+// var asrLanguages = languages.asrLanguages;
+Object.defineProperty(exports, "__esModule", { value: true });
+var languages_1 = require("./languages");
 var genderType = {
-	'F': 'female',	//map: list-entry -> type
-	'M': 'male',	//map: list-entry -> type
-	'female': 'F',	//map: type -> list-entry
-	'male': 'M'		//map: type -> list-entry
-}
-
+    'F': 'female',
+    'M': 'male',
+    'female': 'F',
+    'male': 'M' //map: type -> list-entry
+};
 /**
  * normalize language code, optionally including separator & country-code:
  *  * language code to lower case
@@ -37,31 +37,29 @@ var genderType = {
  * @param  {string} code [description]
  * @return {string} normalized language (and country) code
  */
-function normalizeCode(code){
-  return code.replace(/^([^_-]+)(-|_)?(\w+)?$/, function(_match, lang, sep, country){
-    return (lang? lang.toLowerCase() : '') + (sep? '-' : '') + (country? country.toUpperCase() : '');
-  });
+function normalizeCode(code) {
+    return code.replace(/^([^_-]+)(-|_)?(\w+)?$/, function (_match, lang, sep, country) {
+        return (lang ? lang.toLowerCase() : '') + (sep ? '-' : '') + (country ? country.toUpperCase() : '');
+    });
 }
-
 var ttsProjection = {
-	'code': function(item){
-		return item[1];
-	},
-	'label': function(item){
-		return item[0];
-	},
-	'voice': function(item){
-		return {
-			name: item[2],
-			language: item[1],
-			gender: genderType[ item[3] ]
-		};
-	},
-	'voiceName': function(item){
-		return item[2];
-	}
+    'code': function (item, _index, _list) {
+        return item[1];
+    },
+    'label': function (item, _index, _list) {
+        return item[0];
+    },
+    'voice': function (item, _index, _list) {
+        return {
+            name: item[2],
+            language: item[1],
+            gender: genderType[item[3]]
+        };
+    },
+    'voiceName': function (item, _index, _list) {
+        return item[2];
+    }
 };
-
 /**
  *
  * @param type {"code" | "label" | "voice" | "voiceName"}
@@ -69,44 +67,38 @@ var ttsProjection = {
  * @param [langCode] {String} OPTIONAL
  * 				if present for  "voice" or "voiceName", only voices with matching language code will be returned
  * 				Format: ISO3 language-code (lower-case) and optional ISO3 country-code (upper case), e.g. "eng-USA", "spa_ESP", "deu"
- * @param [gender] {"female" | "male"} OPTIONAL
+ * @param [gender] {Gender} OPTIONAL
  * 				if present for  "voice" or "voiceName", only voices with matching gender will be returned
  *
  * @returns {VoiceInfo} list of strings, depending on type parameter; in case of "voice" a list of voice-objects:
- * 				{name: STRING, language: STRING, gender: "female" | "male"}
+ * 				{name: STRING, language: STRING, gender: Gender}
  */
-function getTTS(type, langCode, gender){
-
-	var isVoiceQuery = type === 'voice' || type === 'voiceName';
-	var list = isVoiceQuery? ttsLanguages : ttsLanguages.filter(function(item, index, array){
-		if(index === 0 || array[index - 1][1] !== item[1]){
-			return item;
-		}
-	});
-
-	if(langCode && isVoiceQuery){
-
-		//allow - and _ as separator:
-		var re = new RegExp('^' + normalizeCode(langCode) + '\\b');
-
-		list = list.filter(function(item){
-			if(re.test(item[1])){
-				return !gender || gender === genderType[ item[3] ]? true : false;
-			}
-		});
-	}
-	return list.map(ttsProjection[type]);
+function getTTS(type, langCode, gender) {
+    var isVoiceQuery = type === 'voice' || type === 'voiceName';
+    var list = isVoiceQuery ? languages_1.ttsLanguages : languages_1.ttsLanguages.filter(function (item, index, array) {
+        if (index === 0 || array[index - 1][1] !== item[1]) {
+            return item;
+        }
+    });
+    if (langCode && isVoiceQuery) {
+        //allow - and _ as separator:
+        var re = new RegExp('^' + normalizeCode(langCode) + '\\b');
+        list = list.filter(function (item) {
+            if (re.test(item[1])) {
+                return !gender || gender === genderType[item[3]] ? true : false;
+            }
+        });
+    }
+    return list.map(ttsProjection[type]);
 }
-
 var asrProjection = {
-	'code': function(item){
-		return item[1];
-	},
-	'label': function(item){
-		return item[0];
-	}
+    'code': function (item, _index, _list) {
+        return item[1];
+    },
+    'label': function (item, _index, _list) {
+        return item[0];
+    }
 };
-
 /**
  *
  * @param type "code" | "label"
@@ -114,10 +106,9 @@ var asrProjection = {
  *
  * @returns {Array<string>} list of strings of language codes or names
  */
-function getASR(type){
-	return asrLanguages.map(asrProjection[type]);
+function getASR(type) {
+    return languages_1.asrLanguages.map(asrProjection[type]);
 }
-
 /**
  * create sorting function for selecting a "best" voice:
  *
@@ -134,71 +125,64 @@ function getASR(type){
  *
  *  @param langCode {String}
  *  			an ISO3 language code (lower case), optionally with ISO3 country code (upper case)
- *  @param [filter] {"female" | "male"} OPTIONAL
+ *  @param [filter] {Gender} OPTIONAL
  *  			the (preferred) gender for the voice
  *
  *  @returns {Function} a sorting function that can be used with Array.sort()
  */
-var createBestVoiceSort = function(langCode, filter) {
-
-	langCode = normalizeCode(langCode);
-	var hasCountry = /^\w+-\w+$/.test(langCode);
-
-	return function(v1, v2) {
-
-		if(filter && v1.gender !== v2.gender){
-			if(v1.gender === filter){
-				return  -1;
-			} else if(v2.gender === filter){
-				return 1;
-			}
-		}
-
-		if(v1.language !== v2.language){
-
-			if(hasCountry){
-				if(v1.language === langCode){
-					return -1;
-				} else if(v2.language === langCode){
-					return 1;
-				}
-			}
-
-			return v1.language.localeCompare(v2.language);
-		}
-
-		return v1.name.localeCompare(v2.name);
-	}
-};
-
+function createBestVoiceSort(langCode, filter) {
+    langCode = normalizeCode(langCode);
+    var hasCountry = /^\w+-\w+$/.test(langCode);
+    return function (v1, v2) {
+        if (filter && v1.gender !== v2.gender) {
+            if (v1.gender === filter) {
+                return -1;
+            }
+            else if (v2.gender === filter) {
+                return 1;
+            }
+        }
+        if (v1.language !== v2.language) {
+            if (hasCountry) {
+                if (v1.language === langCode) {
+                    return -1;
+                }
+                else if (v2.language === langCode) {
+                    return 1;
+                }
+            }
+            return v1.language.localeCompare(v2.language);
+        }
+        return v1.name.localeCompare(v2.name);
+    };
+}
+;
 /**
  * cached result of last invocation of getBestVoice()
  *
  * @type {voice: Voice, language: String, filter: String}
  *
- * @field voice {name: STRING, language: STRING, gender: "female" | "male"}
+ * @field voice {name: STRING, language: STRING, gender: Gender}
  * 				the voice that was selected, when getBestVoice() was (successfully) called last time
  * @field language {String} the language code that was specified when selecting voice as "best voice":
  *                          the ISO3 language code (lower case), optionally with ISO3 country code (upper case)
  * @field [filter] {String} the filter/gender that was specified when selecting voice as "best voice":
- *                          "female" | "male"
+ *                          Gender
  */
 var _lastBestVoice = null;
-
 /**
- * cached result of last invocation of ttsSelectVoice()
+ * cached result of last invocation of ttsSelectVoiceFor()
  *
  * @type {voice: Voice, language: String, filter: String}
  *
- * @field voice {name: STRING, language: STRING, gender: "female" | "male"}
+ * @field voice {name: STRING, language: STRING, gender: Gender}
  * 				the voice that was selected, when getBestVoice() was (successfully) called last time
  * @field language {String} the language code that was specified when selecting voice as "best voice":
  *                          the ISO3 language code (lower case), optionally with ISO3 country code (upper case)
  * @field [filter] {String} the filter/gender that was specified when selecting voice as "best voice":
- *                          "female" | "male"
+ *                          Gender
  */
 var _lastSelectedVoice = null;
-
 /**
  * get "best" matching voice for a language:
  * will try to select a voice with the specified gender (if specified) and country-code (if specified).
@@ -215,40 +199,34 @@ var _lastSelectedVoice = null;
  *
  *  @param langCode {String}
  *  			an ISO3 language code (lower case), optionally with ISO3 country code (upper case)
- *  @param [filter] {"female" | "male"} OPTIONAL
+ *  @param [filter] {Gender} OPTIONAL
  *  			the (preferred) gender for the voice
  *
- *  @returns {VoiceResult} the best matching voice as {voice: {name: STRING, language: STRING, gender: "female" | "male"}, language: <language param>, filter: <filter param>}
+ *  @returns {VoiceResult} the best matching voice as {voice: {name: STRING, language: STRING, gender: Gender}, language: <language param>, filter: <filter param>}
  *           or NULL, if not voice could be found for that language
  */
 function getBestVoice(langCode, gender) {
-
-  //normalize FALSY values for gender query:
-  gender = gender || void(0);
-
-	if(_lastBestVoice && _lastBestVoice.language === langCode && _lastBestVoice.filter === gender){
-    // console.log('  ######## using cached _lastBestVoice ', _lastBestVoice);
-		return _lastBestVoice;
-	}
-  // console.log('-----------------------------\nno match for cached _lastBestVoice ', _lastBestVoice);
-
-	var langParts = langCode.split(/[-_]/);
-	var lang = langParts[0];
-
-	var list = getTTS('voice', lang);
-
-	if(list.length > 0){
-		list.sort(createBestVoiceSort(langCode, gender));
-		_lastBestVoice = {
-			voice: list[0],
-			language: langCode,
-			filter: gender
-		};
-		return _lastBestVoice;
-	}
-	return null;
+    //normalize FALSY values for gender query:
+    gender = gender || void (0);
+    if (_lastBestVoice && _lastBestVoice.language === langCode && _lastBestVoice.filter === gender) {
+        // console.log('  ######## using cached _lastBestVoice ', _lastBestVoice);
+        return _lastBestVoice;
+    }
+    // console.log('-----------------------------\nno match for cached _lastBestVoice ', _lastBestVoice);
+    var langParts = langCode.split(/[-_]/);
+    var lang = langParts[0];
+    var list = getTTS('voice', lang);
+    if (list.length > 0) {
+        list.sort(createBestVoiceSort(langCode, gender));
+        _lastBestVoice = {
+            voice: list[0],
+            language: langCode,
+            filter: gender
+        };
+        return _lastBestVoice;
+    }
+    return null;
 }
-
 /**
  * select a voice by its name or by filter (gender) and language-code
  *
@@ -256,53 +234,55 @@ function getBestVoice(langCode, gender) {
  * @param  {string} query the voice name or filter-query; if FALSY the first matching voice for langCode will be used
  * @return {Voice} the voice matching the query (may be a "best match", i.e. not exactly match the query)
  */
-function ttsSelectVoice(langCode, query){
-
-  //normalize FALSY values for query & langCode:
-  query = query || void(0);
-  langCode = langCode || '';
-
-  if(_lastSelectedVoice && _lastSelectedVoice.language === langCode && _lastSelectedVoice.filter === query){
-    // console.log('  ######## using cached _lastSelectedVoice ', _lastSelectedVoice);
-    return _lastSelectedVoice.voice;
-  }
-  // console.log('-----------------------------\nno match for cached _lastSelectedVoice ', _lastSelectedVoice);
-
-  //1. try to get voice by name:
-  var re = new RegExp('^' + query + '$', 'i');
-  var voice = ttsLanguages.find(function(voiceData){
-    if(re.test(voiceData[2].replace(/-ML$/, ''))){
-      return true;
+function ttsSelectVoiceFor(langCode, query) {
+    //normalize FALSY values for query & langCode:
+    query = query || void (0);
+    langCode = langCode || '';
+    if (_lastSelectedVoice && _lastSelectedVoice.language === langCode && _lastSelectedVoice.filter === query) {
+        // console.log('  ######## using cached _lastSelectedVoice ', _lastSelectedVoice);
+        return _lastSelectedVoice.voice;
     }
-    return false;
-  });
-
-  if(voice){
-    voice = ttsProjection.voice(voice);
-  } else{
-    //2. get best matching voice for langCode & query
-    var bestMatch = getBestVoice(langCode, query);
-    if(bestMatch){
-      voice = bestMatch.voice;
+    // console.log('-----------------------------\nno match for cached _lastSelectedVoice ', _lastSelectedVoice);
+    //1. try to get voice by name:
+    var re = new RegExp('^' + query + '$', 'i');
+    var voiceEntry = languages_1.ttsLanguages.find(function (voiceData) {
+        if (re.test(voiceData[2].replace(/-ML$/, ''))) {
+            return true;
+        }
+        return false;
+    });
+    var voice;
+    if (voiceEntry) {
+        voice = ttsProjection.voice(voiceEntry);
     }
-  }
-
-  if(voice){
-    _lastSelectedVoice = {
-      voice: voice,
-      language: langCode,
-      filter: query
-    };
-  }
-
-  return voice;
+    else {
+        //2. get best matching voice for langCode & query
+        var bestMatch = getBestVoice(langCode, query);
+        if (bestMatch) {
+            voice = bestMatch.voice;
+        }
+    }
+    if (voice) {
+        _lastSelectedVoice = {
+            voice: voice,
+            language: langCode,
+            filter: query
+        };
+    }
+    return voice;
 }
-
-module.exports = {
-    ttsLanguages: function(){ return getTTS('code');},
-    ttsVoices: function(langCode, gender){ return getTTS('voice', langCode, gender);},
-    ttsVoiceNames: function(langCode, gender){ return getTTS('voiceName', langCode, gender);},
-    ttsBestVoiceFor: getBestVoice,
-    asrLanguages: function(){ return getASR('code');},
-    ttsSelectVoice: ttsSelectVoice
-};
+function ttsLanguages() { return getTTS('code'); }
+exports.ttsLanguages = ttsLanguages;
+;
+function ttsVoices(langCode, gender) { return getTTS('voice', langCode, gender); }
+exports.ttsVoices = ttsVoices;
+;
+function ttsVoiceNames(langCode, gender) { return getTTS('voiceName', langCode, gender); }
+exports.ttsVoiceNames = ttsVoiceNames;
+;
+exports.ttsBestVoiceFor = getBestVoice;
+function asrLanguages() { return getASR('code'); }
+exports.asrLanguages = asrLanguages;
+;
+exports.ttsSelectVoice = ttsSelectVoiceFor;
+//# sourceMappingURL=languageSupport.js.map
