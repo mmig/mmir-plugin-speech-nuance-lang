@@ -70,7 +70,7 @@ var ttsProjection = {
  * 				if present for  "voice" or "voiceName", only voices with matching language code will be returned
  * 				Format: ISO3 language-code (lower-case) and optional ISO3 country-code (upper case), e.g. "eng-USA", "spa_ESP", "deu"
  * @param [gender] {"female" | "male"} OPTIONAL
- * 				if present for  "voice" or "voiceName", only voices with matching the gender will be returned
+ * 				if present for  "voice" or "voiceName", only voices with matching gender will be returned
  *
  * @returns {VoiceInfo} list of strings, depending on type parameter; in case of "voice" a list of voice-objects:
  * 				{name: STRING, language: STRING, gender: "female" | "male"}
