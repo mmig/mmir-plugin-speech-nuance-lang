@@ -21,6 +21,9 @@
     <js-module src="www/languages.js" name="languages">
     </js-module>
 
+    <js-module src="www/langSupportUtils.js" name="langSupportUtils">
+    </js-module>
+
     <js-module src="www/languageSupport.js" name="languageSupport">
     	<clobbers target="window.cordova.plugins.nuanceLanguageSupport" />
     </js-module>

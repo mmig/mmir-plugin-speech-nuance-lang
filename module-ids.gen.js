@@ -6,6 +6,9 @@
 
 var _id = "mmir-plugin-speech-nuance-lang";
 var _paths = {
+  "mmir-plugin-speech-nuance-lang/langSupportUtils.d.ts": "www/langSupportUtils.d.ts",
+  "mmir-plugin-speech-nuance-lang/langSupportUtils": "www/langSupportUtils.js",
+  "mmir-plugin-speech-nuance-lang/langSupportUtils.js.map": "www/langSupportUtils.js.map",
   "mmir-plugin-speech-nuance-lang/languages.d.ts": "www/languages.d.ts",
   "mmir-plugin-speech-nuance-lang/languages": "www/languages.js",
   "mmir-plugin-speech-nuance-lang/languages.js.map": "www/languages.js.map",

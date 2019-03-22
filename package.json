@@ -8,7 +8,8 @@
     "lib": "./www"
   },
   "scripts": {
-    "build": "npm run build-ts && npm run build-metadata",
+    "build": "npm run install-res && npm run build-ts && npm run build-metadata",
+    "install-res": "node res/install.js",
     "build-ts": "tsc",
     "build-metadata": "createplugincompat ./ && pluginexport ./"
   },
@@ -27,6 +28,7 @@
   "devDependencies": {
     "mmir-lib": "git+https://gitlab-cos.b.dfki.de/mmir/dev_mmir-lib.git#develop/webpack",
     "mmir-plugin-exports": "git+https://gitlab-cos.b.dfki.de/mmir/mmir-plugin-exports.git",
+    "mmir-plugin-lang-support": "git+https://gitlab-cos.b.dfki.de/mmir/mmir-plugin-lang-support.git",
     "typescript": "^3.3.3333"
   },
   "peerDependencies": {
