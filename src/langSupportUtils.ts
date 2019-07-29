@@ -53,6 +53,8 @@ export class LanguageSupport {
   asrLabel: number;
   asrCode: number;
 
+  hasLabel: boolean = false;
+
   readonly voiceSelectFilter: (voiceName: string) => string;
 
 	constructor(
@@ -63,6 +65,9 @@ export class LanguageSupport {
     voiceSelectFilter?: (voiceName: string) => string
 	){
     for(const n in listIndices){
+      if(n === 'ttsLabel' && typeof listIndices[n] !== 'undefined'){
+        this.hasLabel = true;
+      }
       this[n] = listIndices[n];
     }
     this.voiceSelectFilter = voiceSelectFilter? voiceSelectFilter : (s: string) => s;
@@ -76,11 +81,12 @@ export class LanguageSupport {
 			return item[this.ttsLabel];
 		},
 		'voice': (item: string[], _index: number, _list: string[][]): VoiceDetails => {
-			return {
+      return {
 				name: item[this.ttsName],
+        // label: this.hasLabel? item[this.ttsLabel] : item[this.ttsName], //TODO?
 				language: item[this.ttsCode],
 				gender: this.parseGender( item[this.ttsGender] )
-			};
+			}
 		},
 		'voiceName': (item: string[], _index: number, _list: string[][]): string => {
 			return item[this.ttsName];
@@ -296,7 +302,8 @@ export class LanguageSupport {
 	  //1. try to get voice by name:
 	  const re = new RegExp('^' + query + '$', 'i');
 	  const voiceEntry = this.ttsLanguages.find((voiceData: string[]) => {
-	    if(re.test(this.voiceSelectFilter(voiceData[this.ttsName]))){
+      const name = voiceData[this.ttsName];
+	    if(re.test(name) || re.test(this.voiceSelectFilter(name))){
 	      return true;
 	    }
 	    return false;

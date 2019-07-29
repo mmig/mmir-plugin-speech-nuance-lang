@@ -21,6 +21,7 @@ var LanguageSupport = /** @class */ (function () {
         this.asrLanguages = asrLanguages;
         this.ttsLanguages = ttsLanguages;
         this.parseGender = parseGender;
+        this.hasLabel = false;
         this.ttsProjection = {
             'code': function (item, _index, _list) {
                 return item[_this.ttsCode];
@@ -31,6 +32,7 @@ var LanguageSupport = /** @class */ (function () {
             'voice': function (item, _index, _list) {
                 return {
                     name: item[_this.ttsName],
+                    // label: this.hasLabel? item[this.ttsLabel] : item[this.ttsName], //TODO?
                     language: item[_this.ttsCode],
                     gender: _this.parseGender(item[_this.ttsGender])
                 };
@@ -74,6 +76,9 @@ var LanguageSupport = /** @class */ (function () {
          */
         this._lastSelectedVoice = null;
         for (var n in listIndices) {
+            if (n === 'ttsLabel' && typeof listIndices[n] !== 'undefined') {
+                this.hasLabel = true;
+            }
             this[n] = listIndices[n];
         }
         this.voiceSelectFilter = voiceSelectFilter ? voiceSelectFilter : function (s) { return s; };
@@ -232,7 +237,8 @@ var LanguageSupport = /** @class */ (function () {
         //1. try to get voice by name:
         var re = new RegExp('^' + query + '$', 'i');
         var voiceEntry = this.ttsLanguages.find(function (voiceData) {
-            if (re.test(_this.voiceSelectFilter(voiceData[_this.ttsName]))) {
+            var name = voiceData[_this.ttsName];
+            if (re.test(name) || re.test(_this.voiceSelectFilter(name))) {
                 return true;
             }
             return false;

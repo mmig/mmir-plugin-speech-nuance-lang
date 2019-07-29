@@ -34,6 +34,7 @@ export declare class LanguageSupport {
     ttsGender: number;
     asrLabel: number;
     asrCode: number;
+    hasLabel: boolean;
     readonly voiceSelectFilter: (voiceName: string) => string;
     constructor(asrLanguages: string[][], ttsLanguages: string[][], parseGender: GenderParseFunc, listIndices: LanguageSupportIndex, voiceSelectFilter?: (voiceName: string) => string);
     ttsProjection: {
