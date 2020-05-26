@@ -50,7 +50,7 @@ const nuanceLangSupport = new LanguageSupport(
 	}
 );
 
-export function ttsLanguages (){ return nuanceLangSupport.getTTS('code');};
+export function ttsLanguages(): string[] { return nuanceLangSupport.getTTS('code') as string[];};
 export function ttsVoices(langCode?: string, gender?: Gender): VoiceDetails[] { return nuanceLangSupport.getTTS('voice', langCode, gender) as VoiceDetails[];};
 export function ttsVoiceNames(langCode?: string, gender?: Gender): string[] { return nuanceLangSupport.getTTS('voiceName', langCode, gender) as string[];};
 export function ttsBestVoiceFor(langCode: string, gender?: Gender): VoiceResult { return nuanceLangSupport.getBestVoice(langCode, gender);};

@@ -33,33 +33,35 @@ export function normalizeCode(code: string): string {
 export interface LanguageSupportIndex {
 
   //[0] Language, [1]	6 char *, [2]	Voice, [3]	M / F
-  ttsLabel: number;
-  ttsCode: number;
-  ttsName: number;
-  ttsGender: number;
+  ttsLabel: number|string;
+  ttsCode: number|string;
+  ttsName: number|string;
+  ttsGender: number|string;
 
   //	[0] Language, [1]	6 char *, [2]	Frequency
-  asrLabel: number;
-  asrCode: number;
+  asrLabel: number|string;
+  asrCode: number|string;
 }
+
+export type LanguageResourceEntry = string[] | {[field: string]: string};
 
 export class LanguageSupport {
 
-  ttsLabel: number;
-  ttsCode: number;
-  ttsName: number;
-  ttsGender: number;
+  ttsLabel: number|string;
+  ttsCode: number|string;
+  ttsName: number|string;
+  ttsGender: number|string;
 
-  asrLabel: number;
-  asrCode: number;
+  asrLabel: number|string;
+  asrCode: number|string;
 
   hasLabel: boolean = false;
 
   readonly voiceSelectFilter: (voiceName: string) => string;
 
 	constructor(
-		public asrLanguages: string[][],
-		public ttsLanguages: string[][],
+		public asrLanguages: LanguageResourceEntry[],
+		public ttsLanguages: LanguageResourceEntry[],
 		public parseGender: GenderParseFunc,
     listIndices: LanguageSupportIndex,
     voiceSelectFilter?: (voiceName: string) => string
@@ -73,14 +75,14 @@ export class LanguageSupport {
     this.voiceSelectFilter = voiceSelectFilter? voiceSelectFilter : (s: string) => s;
   }
 
-	ttsProjection: {[type: string]: (entry: string[], index?: number, list?: string[][]) => string|VoiceDetails} = {
-		'code': (item: string[], _index: number, _list: string[][]): string => {
+	ttsProjection: {[type: string]: (entry: LanguageResourceEntry, index?: number, list?: LanguageResourceEntry[]) => string|VoiceDetails} = {
+		'code': (item: LanguageResourceEntry, _index: number, _list: LanguageResourceEntry[]): string => {
 			return item[this.ttsCode];
 		},
-		'label': (item: string[], _index: number, _list: string[][]): string => {
+		'label': (item: LanguageResourceEntry, _index: number, _list: LanguageResourceEntry[]): string => {
 			return item[this.ttsLabel];
 		},
-		'voice': (item: string[], _index: number, _list: string[][]): VoiceDetails => {
+		'voice': (item: LanguageResourceEntry, _index: number, _list: LanguageResourceEntry[]): VoiceDetails => {
       return {
 				name: item[this.ttsName],
         // label: this.hasLabel? item[this.ttsLabel] : item[this.ttsName], //TODO?
@@ -88,7 +90,7 @@ export class LanguageSupport {
 				gender: this.parseGender( item[this.ttsGender] )
 			}
 		},
-		'voiceName': (item: string[], _index: number, _list: string[][]): string => {
+		'voiceName': (item: LanguageResourceEntry, _index: number, _list: LanguageResourceEntry[]): string => {
 			return item[this.ttsName];
 		}
 	}
@@ -129,11 +131,11 @@ export class LanguageSupport {
 		return list.map(this.ttsProjection[type]);
 	}
 
-	asrProjection: {[type: string]: (entry: string[], index?: number, list?: string[][]) => string}  = {
-		'code': (item: string[], _index: number, _list: string[][]): string => {
+	asrProjection: {[type: string]: (entry: LanguageResourceEntry, index?: number, list?: LanguageResourceEntry[]) => string}  = {
+		'code': (item: LanguageResourceEntry, _index: number, _list: LanguageResourceEntry[]): string => {
 			return item[this.asrCode];
 		},
-		'label': (item: string[], _index: number, _list: string[][]): string => {
+		'label': (item: LanguageResourceEntry, _index: number, _list: LanguageResourceEntry[]): string => {
 			return item[this.asrLabel];
 		}
 	}
