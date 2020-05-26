@@ -96,6 +96,7 @@ define(function() { return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.languages = exports.languageSupport = void 0;
 var languageSupport = __webpack_require__(/*! ../src/languageSupport */ "./src/languageSupport.ts");
 exports.languageSupport = languageSupport;
 var languages = __webpack_require__(/*! ../src/languages */ "./src/languages.ts");
@@ -114,6 +115,7 @@ exports.languages = languages;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LanguageSupport = exports.normalizeCode = void 0;
 /**
  * normalize language code, optionally including separator & country-code:
  *  * language code to lower case
@@ -421,6 +423,7 @@ exports.LanguageSupport = LanguageSupport;
 //  */
 // var asrLanguages = languages.asrLanguages;
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ttsSelectVoice = exports.asrLanguages = exports.ttsBestVoiceFor = exports.ttsVoiceNames = exports.ttsVoices = exports.ttsLanguages = void 0;
 var languages_1 = __webpack_require__(/*! ./languages */ "./src/languages.ts");
 var langSupportUtils_1 = __webpack_require__(/*! ./langSupportUtils */ "./src/langSupportUtils.ts");
 var genderType = {
@@ -475,6 +478,7 @@ exports.ttsSelectVoice = ttsSelectVoice;
 //from https://developer.nuance.com/public/index.php?task=supportedLanguages
 //state: 2019-01
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ttsLanguages = exports.asrLanguages = void 0;
 /**
  * [0] Language, [1]	6 char *, [2]	Voice, [3]	M / F
  */

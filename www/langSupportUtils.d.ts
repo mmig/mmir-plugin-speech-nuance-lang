@@ -17,28 +17,31 @@ export declare type VoiceResult = {
  */
 export declare function normalizeCode(code: string): string;
 export interface LanguageSupportIndex {
-    ttsLabel: number;
-    ttsCode: number;
-    ttsName: number;
-    ttsGender: number;
-    asrLabel: number;
-    asrCode: number;
+    ttsLabel: number | string;
+    ttsCode: number | string;
+    ttsName: number | string;
+    ttsGender: number | string;
+    asrLabel: number | string;
+    asrCode: number | string;
 }
+export declare type LanguageResourceEntry = string[] | {
+    [field: string]: string;
+};
 export declare class LanguageSupport {
-    asrLanguages: string[][];
-    ttsLanguages: string[][];
+    asrLanguages: LanguageResourceEntry[];
+    ttsLanguages: LanguageResourceEntry[];
     parseGender: GenderParseFunc;
-    ttsLabel: number;
-    ttsCode: number;
-    ttsName: number;
-    ttsGender: number;
-    asrLabel: number;
-    asrCode: number;
+    ttsLabel: number | string;
+    ttsCode: number | string;
+    ttsName: number | string;
+    ttsGender: number | string;
+    asrLabel: number | string;
+    asrCode: number | string;
     hasLabel: boolean;
     readonly voiceSelectFilter: (voiceName: string) => string;
-    constructor(asrLanguages: string[][], ttsLanguages: string[][], parseGender: GenderParseFunc, listIndices: LanguageSupportIndex, voiceSelectFilter?: (voiceName: string) => string);
+    constructor(asrLanguages: LanguageResourceEntry[], ttsLanguages: LanguageResourceEntry[], parseGender: GenderParseFunc, listIndices: LanguageSupportIndex, voiceSelectFilter?: (voiceName: string) => string);
     ttsProjection: {
-        [type: string]: (entry: string[], index?: number, list?: string[][]) => string | VoiceDetails;
+        [type: string]: (entry: LanguageResourceEntry, index?: number, list?: LanguageResourceEntry[]) => string | VoiceDetails;
     };
     /**
      *
@@ -55,7 +58,7 @@ export declare class LanguageSupport {
      */
     getTTS(type: "code" | "label" | "voice" | "voiceName", langCode?: string, gender?: Gender): (string | VoiceDetails)[];
     asrProjection: {
-        [type: string]: (entry: string[], index?: number, list?: string[][]) => string;
+        [type: string]: (entry: LanguageResourceEntry, index?: number, list?: LanguageResourceEntry[]) => string;
     };
     /**
      *

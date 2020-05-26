@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LanguageSupport = exports.normalizeCode = void 0;
 /**
  * normalize language code, optionally including separator & country-code:
  *  * language code to lower case

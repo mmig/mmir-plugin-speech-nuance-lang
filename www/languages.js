@@ -2,6 +2,7 @@
 //from https://developer.nuance.com/public/index.php?task=supportedLanguages
 //state: 2019-01
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ttsLanguages = exports.asrLanguages = void 0;
 /**
  * [0] Language, [1]	6 char *, [2]	Voice, [3]	M / F
  */

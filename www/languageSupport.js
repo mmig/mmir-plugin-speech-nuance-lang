@@ -21,6 +21,7 @@
 //  */
 // var asrLanguages = languages.asrLanguages;
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ttsSelectVoice = exports.asrLanguages = exports.ttsBestVoiceFor = exports.ttsVoiceNames = exports.ttsVoices = exports.ttsLanguages = void 0;
 var languages_1 = require("./languages");
 var langSupportUtils_1 = require("./langSupportUtils");
 var genderType = {
