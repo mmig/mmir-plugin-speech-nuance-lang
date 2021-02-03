@@ -4,13 +4,21 @@
   "description": "tools for querying supported languages (ASR and TTS) and voices (TTS) by Nuance SpeechKit",
   "main": "./index.js",
   "types": "index.d.ts",
+  "typesVersions": {
+    "<3.8": {
+      "www/*": [
+        "www/ts3.6/*"
+      ]
+    }
+  },
   "directories": {
     "lib": "./www"
   },
   "scripts": {
-    "build": "npm run install-res && npm run build-ts && npm run build-dist && npm run build-metadata",
+    "build": "npm run install-res && npm run build-ts && npm run downlevel-dts && npm run build-dist && npm run build-metadata",
     "install-res": "node res/install.js",
     "build-ts": "tsc",
+    "downlevel-dts": "dtsdownlevel --force www",
     "build-dist": "webpack",
     "build-metadata": "createplugincompat ./ && pluginexport ./"
   },
