@@ -4,12 +4,12 @@
     id="mmir-plugin-speech-nuance-lang"
     version="1.0.0">
 
-    <name>Nuance SpeechKit Supported Languages and Voices</name>
+    <name>Nuance / Cerence SpeechKit Supported Languages and Voices</name>
 
-    <keywords>speech,language,nuance,speechkit</keywords>
+    <keywords>speech,language,nuance,cerence,speechkit</keywords>
 
     <description>
-      tools for querying supported languages (ASR and TTS) and voices (TTS) by Nuance SpeechKit
+      tools for querying supported languages (ASR and TTS) and voices (TTS) by Nuance / Cerence SpeechKit
     </description>
 
     <author>russa, DFKI</author>

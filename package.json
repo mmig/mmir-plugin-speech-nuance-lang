@@ -1,7 +1,7 @@
 {
   "name": "mmir-plugin-speech-nuance-lang",
   "version": "1.0.1",
-  "description": "tools for querying supported languages (ASR and TTS) and voices (TTS) by Nuance SpeechKit",
+  "description": "tools for querying supported languages (ASR and TTS) and voices (TTS) by Nuance / Cerence SpeechKit",
   "main": "./index.js",
   "types": "index.d.ts",
   "typesVersions": {
@@ -28,8 +28,15 @@
   },
   "keywords": [
     "speech",
+    "asr",
+    "tts",
     "language",
+    "cordova",
+    "mmir",
+    "plugin",
+    "mmir plugin",
     "nuance",
+    "cerence",
     "speechkit"
   ],
   "author": "russa",
