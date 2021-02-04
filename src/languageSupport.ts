@@ -26,8 +26,8 @@ import { LanguageSupport, Gender, VoiceResult } from './langSupportUtils';
 import { VoiceDetails } from 'mmir-lib';
 
 const genderType = {
-  'F': 'female',	//map: list-entry -> type
-  'M': 'male',	//map: list-entry -> type
+  'F': 'female',	 //map: list-entry -> type
+  'M': 'male',	   //map: list-entry -> type
 };
 
 const nuanceLangSupport = new LanguageSupport(
@@ -49,6 +49,7 @@ const nuanceLangSupport = new LanguageSupport(
     return voiceName.replace(/-ML$/, '');
   }
 );
+nuanceLangSupport.isLocal = false;
 
 export function ttsLanguages(): string[] { return nuanceLangSupport.getTTS('code') as string[];};
 export function ttsVoices(langCode?: string, gender?: Gender): VoiceDetails[] { return nuanceLangSupport.getTTS('voice', langCode, gender) as VoiceDetails[];};
@@ -56,3 +57,5 @@ export function ttsVoiceNames(langCode?: string, gender?: Gender): string[] { re
 export function ttsBestVoiceFor(langCode: string, gender?: Gender): VoiceResult { return nuanceLangSupport.getBestVoice(langCode, gender);};
 export function asrLanguages(): string [] { return nuanceLangSupport.getASR('code');};
 export function ttsSelectVoice(langCode: string, query?: Gender | string): VoiceDetails { return nuanceLangSupport.ttsSelectVoiceFor(langCode, query); };
+/** set "local availability" for all voices; DEFAULT false (i.e. network/internet access required for all voices) */
+export function ttsVoicesLocal(allVoicesLocal: boolean | undefined): void { nuanceLangSupport.isLocal = allVoicesLocal; };
