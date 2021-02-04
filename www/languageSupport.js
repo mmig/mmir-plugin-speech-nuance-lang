@@ -1,29 +1,10 @@
 "use strict";
-// var languages = require('./languages');
-//
-// /**
-//  * TTS languages & voices:
-//  * list of arrays, where an array in the list contains
-//  * <pre>
-//  * [0] Language, [1]	6 char *, [2]	Voice, [3]	M / F
-//  * </pre>
-//  * @type Array<Array<string>>
-//  */
-// var ttsLanguages = languages.ttsLanguages;
-//
-// /**
-//  * ASR languages:
-//  * list of arrays, where an array in the list contains
-//  * <pre>
-//  * [0] Language, [1]	6 char *, [2]	Frequency
-//  * </pre>
-//  * @type Array<Array<string>>
-//  */
-// var asrLanguages = languages.asrLanguages;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ttsSelectVoice = exports.asrLanguages = exports.ttsBestVoiceFor = exports.ttsVoiceNames = exports.ttsVoices = exports.ttsLanguages = void 0;
+exports.ttsVoicesLocal = exports.ttsSelectVoice = exports.asrLanguages = exports.ttsBestVoiceFor = exports.ttsVoiceNames = exports.ttsVoices = exports.ttsLanguages = exports.LanguageSupport = void 0;
 var languages_1 = require("./languages");
 var langSupportUtils_1 = require("./langSupportUtils");
+var langSupportUtils_2 = require("./langSupportUtils");
+Object.defineProperty(exports, "LanguageSupport", { enumerable: true, get: function () { return langSupportUtils_2.LanguageSupport; } });
 var genderType = {
     'F': 'female',
     'M': 'male',
@@ -40,8 +21,10 @@ var nuanceLangSupport = new langSupportUtils_1.LanguageSupport(languages_1.asrLa
     asrLabel: 0,
     asrCode: 1
 }, function selectVoiceFilter(voiceName) {
+    // remove "-ML" suffix from voice name, if present, before matching with queried search string:
     return voiceName.replace(/-ML$/, '');
 });
+nuanceLangSupport.isLocal = false;
 function ttsLanguages() { return nuanceLangSupport.getTTS('code'); }
 exports.ttsLanguages = ttsLanguages;
 ;
@@ -59,5 +42,9 @@ exports.asrLanguages = asrLanguages;
 ;
 function ttsSelectVoice(langCode, query) { return nuanceLangSupport.ttsSelectVoiceFor(langCode, query); }
 exports.ttsSelectVoice = ttsSelectVoice;
+;
+/** set "local availability" for all voices; DEFAULT false (i.e. network/internet access required for all voices) */
+function ttsVoicesLocal(allVoicesLocal) { nuanceLangSupport.isLocal = allVoicesLocal; }
+exports.ttsVoicesLocal = ttsVoicesLocal;
 ;
 //# sourceMappingURL=languageSupport.js.map

@@ -1,11 +1,15 @@
 import { VoiceDetails } from 'mmir-lib';
+/** transformation for raw data to gender string */
 export declare type GenderParseFunc = (gender: string) => 'female' | 'male';
 export declare type Gender = "female" | "male";
-export declare type VoiceResult = {
-    voice: VoiceDetails;
+export interface LabeledVoiceDetails extends VoiceDetails {
+    label: string;
+}
+export interface VoiceResult {
+    voice: LabeledVoiceDetails;
     language: string;
     filter: string;
-};
+}
 /**
  * normalize language code, optionally including separator & country-code:
  *  * language code to lower case
@@ -16,12 +20,21 @@ export declare type VoiceResult = {
  * @return {string} normalized language (and country) code
  */
 export declare function normalizeCode(code: string): string;
+/** metadata definition for how to access a data row/object for specific fields */
 export interface LanguageSupportIndex {
-    ttsLabel: number | string;
+    /** name/index for TTS (language) code field */
     ttsCode: number | string;
+    /** name/index for TTS (voice) name field */
     ttsName: number | string;
+    /** name/index for TTS (voice) gender field */
     ttsGender: number | string;
+    /** name/index for (OPTIONAL) TTS (voice) label field */
+    ttsLabel?: number | string;
+    /** name/index for (OPTIONAL) TTS (voice) "is locally available" field */
+    ttsLocal?: number | string;
+    /** name/index for ASR (language) label field */
     asrLabel: number | string;
+    /** name/index for ASR (language) code field */
     asrCode: number | string;
 }
 export declare type LanguageResourceEntry = string[] | {
@@ -31,36 +44,67 @@ export declare class LanguageSupport {
     asrLanguages: LanguageResourceEntry[];
     ttsLanguages: LanguageResourceEntry[];
     parseGender: GenderParseFunc;
-    ttsLabel: number | string;
+    /** name/index for TTS (language) code field */
     ttsCode: number | string;
+    /** name/index for TTS (voice) name field */
     ttsName: number | string;
+    /** name/index for TTS (voice) gender field */
     ttsGender: number | string;
+    /** name/index for (OPTIONAL) TTS (voice) label field */
+    ttsLabel?: number | string;
+    /** name/index for (OPTIONAL) TTS (voice) "is locally available" field */
+    ttsLocal?: number | string;
+    /** name/index for ASR (language) label field */
     asrLabel: number | string;
+    /** name/index for ASR (language) code field */
     asrCode: number | string;
-    hasLabel: boolean;
+    /**
+     * if TTS voices are locally (without network/internet) availabled:
+     * Can be set manually, to indicate local availibility for all voices.
+     *
+     * If `listIndices: LanguageSupportIndex`
+     *
+     * If unset (i.e. `undefined`), no information regarding local
+     * availability is available; it should be assumed, that network/internet resources
+     * may be required for the voice(s).
+     */
+    isLocal: boolean | undefined;
+    /**
+     * if TTS voices do have an additional information about local availability:
+     * detected during initialization, when `listIndices: LanguageSupportIndex`
+     * has a `ttsLocal` field.
+     */
+    readonly hasLocal: boolean;
+    /**
+     * if TTS voices do have an additional (human readable) name:
+     * detected during initialization, when `listIndices: LanguageSupportIndex`
+     * has a `ttsLabel` field.
+     */
+    readonly hasLabel: boolean;
+    /**
+     * transformation function for TTS voice name, used when querying for a voice;
+     * can be set via constructor.
+     *
+     * DEFAULT: use voice name as is (i.e. unchanged).
+     */
     readonly voiceSelectFilter: (voiceName: string) => string;
     constructor(asrLanguages: LanguageResourceEntry[], ttsLanguages: LanguageResourceEntry[], parseGender: GenderParseFunc, listIndices: LanguageSupportIndex, voiceSelectFilter?: (voiceName: string) => string);
     ttsProjection: {
-        [type: string]: (entry: LanguageResourceEntry, index?: number, list?: LanguageResourceEntry[]) => string | VoiceDetails;
+        [type: string]: (entry: LanguageResourceEntry, index?: number, list?: LanguageResourceEntry[]) => string | LabeledVoiceDetails;
     };
-    /**
-     *
-     * @param type {"code" | "label" | "voice" | "voiceName"}
-     * 					type of returned list: language code, language name, voice information, voice-name
-     * @param [langCode] {String} OPTIONAL
-     * 				if present for  "voice" or "voiceName", only voices with matching language code will be returned
-     * 				Format: ISO3 language-code (lower-case) and optional ISO3 country-code (upper case), e.g. "eng-USA", "spa_ESP", "deu"
-     * @param [gender] {Gender} OPTIONAL
-     * 				if present for  "voice" or "voiceName", only voices with matching gender will be returned
-     *
-     * @returns {VoiceInfo} list of strings, depending on type parameter; in case of "voice" a list of voice-objects:
-     * 				{name: STRING, language: STRING, gender: Gender}
-     */
-    getTTS(type: "code" | "label" | "voice" | "voiceName", langCode?: string, gender?: Gender): (string | VoiceDetails)[];
+    /** get list of supported TTS language codes */
+    getTTS(type: "code"): string[];
+    /** get list of supported TTS languages (i.e. language labels) */
+    getTTS(type: "label"): string[];
+    /** get list of supported TTS voice details (OPTIONAL: filter for language (code) and/or voice gender) */
+    getTTS(type: "voice", langCode?: string, gender?: Gender): LabeledVoiceDetails[];
+    /** get list of supported TTS voices (OPTIONAL: filter for language (code) and/or voice gender) */
+    getTTS(type: "voiceName", langCode?: string, gender?: Gender): string[];
     asrProjection: {
         [type: string]: (entry: LanguageResourceEntry, index?: number, list?: LanguageResourceEntry[]) => string;
     };
     /**
+     * query for ASR language
      *
      * @param type "code" | "label"
      * 					type of returned list: language code, language name
@@ -89,7 +133,18 @@ export declare class LanguageSupport {
      *
      *  @returns {Function} a sorting function that can be used with Array.sort()
      */
-    createBestVoiceSort(langCode: string, filter?: Gender): (v1: VoiceDetails, v2: VoiceDetails) => number;
+    createBestVoiceSort(langCode: string, filter?: Gender): (v1: LabeledVoiceDetails, v2: LabeledVoiceDetails) => number;
+    /**
+     * if cached results for best voice / selected voice should be used:
+     * should be disabled, if underlying TTS voice list is created dynamically/changes.
+     *
+     * @default true
+     *
+     * @see getBestVoice
+     * @see ttsSelectVoiceFor
+     * @see resetVoiceQueryCache
+     */
+    useVoiceQueryCache: boolean;
     /**
      * cached result of last invocation of getBestVoice()
      *
@@ -116,6 +171,12 @@ export declare class LanguageSupport {
      *                          Gender
      */
     protected _lastSelectedVoice: VoiceResult;
+    /**
+     * reset cached results for best matching voice and last selected voice
+     *
+     * @see useVoiceQueryCache
+     */
+    resetVoiceQueryCache(): void;
     /**
      * get "best" matching voice for a language:
      * will try to select a voice with the specified gender (if specified) and country-code (if specified).
@@ -146,5 +207,5 @@ export declare class LanguageSupport {
      * @param  {string} query the voice name or filter-query; if FALSY the first matching voice for langCode will be used
      * @return {Voice} the voice matching the query (may be a "best match", i.e. not exactly match the query)
      */
-    ttsSelectVoiceFor(langCode: string, query?: Gender | string): VoiceDetails;
+    ttsSelectVoiceFor(langCode: string, query?: Gender | string): LabeledVoiceDetails;
 }

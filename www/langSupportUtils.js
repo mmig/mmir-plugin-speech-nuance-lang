@@ -22,7 +22,6 @@ var LanguageSupport = /** @class */ (function () {
         this.asrLanguages = asrLanguages;
         this.ttsLanguages = ttsLanguages;
         this.parseGender = parseGender;
-        this.hasLabel = false;
         this.ttsProjection = {
             'code': function (item, _index, _list) {
                 return item[_this.ttsCode];
@@ -33,9 +32,10 @@ var LanguageSupport = /** @class */ (function () {
             'voice': function (item, _index, _list) {
                 return {
                     name: item[_this.ttsName],
-                    // label: this.hasLabel? item[this.ttsLabel] : item[this.ttsName], //TODO?
+                    label: _this.hasLabel ? item[_this.ttsLabel] : item[_this.ttsName],
                     language: item[_this.ttsCode],
-                    gender: _this.parseGender(item[_this.ttsGender])
+                    gender: _this.parseGender(item[_this.ttsGender]),
+                    local: _this.hasLocal ? item[_this.ttsLocal] : _this.isLocal
                 };
             },
             'voiceName': function (item, _index, _list) {
@@ -50,6 +50,17 @@ var LanguageSupport = /** @class */ (function () {
                 return item[_this.asrLabel];
             }
         };
+        /**
+         * if cached results for best voice / selected voice should be used:
+         * should be disabled, if underlying TTS voice list is created dynamically/changes.
+         *
+         * @default true
+         *
+         * @see getBestVoice
+         * @see ttsSelectVoiceFor
+         * @see resetVoiceQueryCache
+         */
+        this.useVoiceQueryCache = true;
         /**
          * cached result of last invocation of getBestVoice()
          *
@@ -76,15 +87,21 @@ var LanguageSupport = /** @class */ (function () {
          *                          Gender
          */
         this._lastSelectedVoice = null;
+        this.hasLabel = false;
+        this.hasLocal = false;
         for (var n in listIndices) {
             if (n === 'ttsLabel' && typeof listIndices[n] !== 'undefined') {
                 this.hasLabel = true;
+            }
+            if (n === 'ttsLocal' && typeof listIndices[n] !== 'undefined') {
+                this.hasLocal = true;
             }
             this[n] = listIndices[n];
         }
         this.voiceSelectFilter = voiceSelectFilter ? voiceSelectFilter : function (s) { return s; };
     }
     /**
+     * query for TTS languages for voices
      *
      * @param type {"code" | "label" | "voice" | "voiceName"}
      * 					type of returned list: language code, language name, voice information, voice-name
@@ -117,6 +134,7 @@ var LanguageSupport = /** @class */ (function () {
         return list.map(this.ttsProjection[type]);
     };
     /**
+     * query for ASR language
      *
      * @param type "code" | "label"
      * 					type of returned list: language code, language name
@@ -170,10 +188,30 @@ var LanguageSupport = /** @class */ (function () {
                 }
                 return v1.language.localeCompare(v2.language);
             }
+            if (v1.language !== v2.language) {
+                if (hasCountry) {
+                    if (v1.language === langCode) {
+                        return -1;
+                    }
+                    else if (v2.language === langCode) {
+                        return 1;
+                    }
+                }
+                return v1.language.localeCompare(v2.language);
+            }
             return v1.name.localeCompare(v2.name);
         };
     };
     ;
+    /**
+     * reset cached results for best matching voice and last selected voice
+     *
+     * @see useVoiceQueryCache
+     */
+    LanguageSupport.prototype.resetVoiceQueryCache = function () {
+        this._lastBestVoice = null;
+        this._lastSelectedVoice = null;
+    };
     /**
      * get "best" matching voice for a language:
      * will try to select a voice with the specified gender (if specified) and country-code (if specified).
@@ -199,7 +237,7 @@ var LanguageSupport = /** @class */ (function () {
     LanguageSupport.prototype.getBestVoice = function (langCode, gender) {
         //normalize FALSY values for gender query:
         gender = gender || void (0);
-        if (this._lastBestVoice && this._lastBestVoice.language === langCode && this._lastBestVoice.filter === gender) {
+        if (this.useVoiceQueryCache && this._lastBestVoice && this._lastBestVoice.language === langCode && this._lastBestVoice.filter === gender) {
             // console.log('  ######## using cached _lastBestVoice ', _lastBestVoice);
             return this._lastBestVoice;
         }
@@ -207,7 +245,7 @@ var LanguageSupport = /** @class */ (function () {
         var langParts = langCode.split(/[-_]/);
         var lang = langParts[0];
         var list = this.getTTS('voice', lang);
-        if (list.length > 0) {
+        if (this.useVoiceQueryCache && list.length > 0) {
             list.sort(this.createBestVoiceSort(langCode, gender));
             this._lastBestVoice = {
                 voice: list[0],
@@ -230,7 +268,7 @@ var LanguageSupport = /** @class */ (function () {
         //normalize FALSY values for query & langCode:
         query = query || void (0);
         langCode = langCode || '';
-        if (this._lastSelectedVoice && this._lastSelectedVoice.language === langCode && this._lastSelectedVoice.filter === query) {
+        if (this.useVoiceQueryCache && this._lastSelectedVoice && this._lastSelectedVoice.language === langCode && this._lastSelectedVoice.filter === query) {
             // console.log('  ######## using cached _lastSelectedVoice ', _lastSelectedVoice);
             return this._lastSelectedVoice.voice;
         }
@@ -255,7 +293,7 @@ var LanguageSupport = /** @class */ (function () {
                 voice = bestMatch.voice;
             }
         }
-        if (voice) {
+        if (this.useVoiceQueryCache && voice) {
             this._lastSelectedVoice = {
                 voice: voice,
                 language: langCode,
@@ -267,10 +305,4 @@ var LanguageSupport = /** @class */ (function () {
     return LanguageSupport;
 }());
 exports.LanguageSupport = LanguageSupport;
-// export function ttsLanguages (){ return getTTS('code');};
-// export function ttsVoices(langCode?: string, gender?: Gender): VoiceDetails[] { return getTTS('voice', langCode, gender) as VoiceDetails[];};
-// export function ttsVoiceNames(langCode?: string, gender?: Gender): string[] { return getTTS('voiceName', langCode, gender) as string[];};
-// export const ttsBestVoiceFor = getBestVoice;
-// export function asrLanguages(): string [] { return getASR('code');};
-// export const ttsSelectVoice = ttsSelectVoiceFor;
 //# sourceMappingURL=langSupportUtils.js.map
