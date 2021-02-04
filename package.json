@@ -15,12 +15,13 @@
     "lib": "./www"
   },
   "scripts": {
-    "build": "npm run install-res && npm run build-ts && npm run downlevel-dts && npm run build-dist && npm run build-metadata",
-    "install-res": "node res/install.js",
-    "build-ts": "tsc",
-    "downlevel-dts": "dtsdownlevel --force www",
-    "build-dist": "webpack",
-    "build-metadata": "createplugincompat ./ && pluginexport ./"
+    "build": "npm run install:res && npm run build:ts && npm run downlevel:dts && npm run build:dist && npm run build:metadata",
+    "install:res": "node res/install.js",
+    "build:ts": "tsc",
+    "downlevel:dts": "dtsdownlevel --force www",
+    "build:dist": "webpack",
+    "build:metadata": "createplugincompat ./ && pluginexport ./",
+    "update:version": "updateversion --enable-package-lock ./"
   },
   "repository": {
     "type": "git",
