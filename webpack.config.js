@@ -5,7 +5,7 @@ module.exports = {
   mode: 'development',
   devtool: 'source-map',
   entry: {
-    'mmir-plugin-speech-nuance-lang': './res/web-dist.ts'
+    'languageSupport': './res/web-dist.ts'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
