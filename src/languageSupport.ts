@@ -26,28 +26,28 @@ import { LanguageSupport, Gender, VoiceResult } from './langSupportUtils';
 import { VoiceDetails } from 'mmir-lib';
 
 const genderType = {
-	'F': 'female',	//map: list-entry -> type
-	'M': 'male',	//map: list-entry -> type
+  'F': 'female',	//map: list-entry -> type
+  'M': 'male',	//map: list-entry -> type
 };
 
 const nuanceLangSupport = new LanguageSupport(
-	asrLanguageList,
-	ttsLanguageList,
-	function parseGender(gender: string): Gender {
-		return genderType[gender];
-	}, {
-	  //[0] Language, [1]	6 char *, [2]	Voice, [3]	M / F
-	  ttsLabel: 0,
-	  ttsCode: 1,
-	  ttsName: 2,
-	  ttsGender: 3,
-	  //	[0] Language, [1]	6 char *, [2]	Frequency
-	  asrLabel: 0,
-	  asrCode: 1
-	},
-	function selectVoiceFilter(voiceName: string): string {
-		return voiceName.replace(/-ML$/, '');
-	}
+  asrLanguageList,
+  ttsLanguageList,
+  function parseGender(gender: string): Gender {
+    return genderType[gender];
+  }, {
+    //[0] Language, [1]	6 char *, [2]	Voice, [3]	M / F
+    ttsLabel: 0,
+    ttsCode: 1,
+    ttsName: 2,
+    ttsGender: 3,
+    //	[0] Language, [1]	6 char *, [2]	Frequency
+    asrLabel: 0,
+    asrCode: 1
+  },
+  function selectVoiceFilter(voiceName: string): string {
+    return voiceName.replace(/-ML$/, '');
+  }
 );
 
 export function ttsLanguages(): string[] { return nuanceLangSupport.getTTS('code') as string[];};
