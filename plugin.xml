@@ -2,7 +2,7 @@
 <plugin
     xmlns="http://cordova.apache.org/ns/plugins/1.0"
     id="mmir-plugin-speech-nuance-lang"
-    version="1.1.0">
+    version="1.1.1">
 
     <name>Nuance / Cerence SpeechKit Supported Languages and Voices</name>
 
