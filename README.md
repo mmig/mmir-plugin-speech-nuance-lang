@@ -26,7 +26,8 @@ var langTools = window.cordova.plugins.nuanceLanguageSupport.languageSupport;
 As `AMD` module:
 ```javascript
 // use async require (or specify as define-dependency):
-require('mmir-plugin-speech-nuance-lang/dist/languageSupport', function(langTools){
+require('mmir-plugin-speech-nuance-lang/dist/languageSupport', function(langToolsModule){
+  var langTools = langToolsModule.languageSupport;
 
   ...
 });
