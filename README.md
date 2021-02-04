@@ -88,7 +88,7 @@ interface LabeledVoiceDetails {
 for usage in cordova-plugins, copy `/dist` (AMD), `/www` (CommonJS), or `/src` (TypeScript)
 to the appropriate location in plugin project, e.g. via the exported function
 ```javascript
-const installFiles = require('mmir-plugin-speech-nuance-lang');
+const installFiles = require('mmir-plugin-speech-nuance-lang/install');
 
 installFiles(srcDirType: "dist" | "src" | "www", targetDir: string, callback(err: Error | null))
 ```
